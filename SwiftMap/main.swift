@@ -10,14 +10,47 @@ import Foundation
 
 
 func SwiftMap() {
-    initscr()
+    
+    let theScr = initscr()
+    
+    // Make sure keyboard input is not echoed back to the screen.
+    noecho()
+    // Enable cursor keypresses.
+    keypad(theScr, true)
+    
     addstr("Welcome to SwiftMap.")
     drawSquare(NSMakeRect(15, 5, 20, 10))
     refresh()
-    getch()
-    endwin()
     
+    
+//    if getch() == KEY_LEFT {
+//        addstr("key:")
+//        refresh()
+//    } else {
+//        addstr("arse")
+//        refresh()
+//    }
+    var quit = false
+    
+    while quit == false {
+        move(0,0)
+        switch getch() {
+        case KEY_UP:
+            addstr("Arrow up.")
+        case KEY_DOWN:
+            addstr("Arrow down.")
+        case KEY_LEFT:
+            addstr("Arrow left.")
+        case KEY_RIGHT:
+            addstr("Arrow right.")
+        default:
+            quit = true
+        }
+        refresh()
+    }
+    endwin()
     exit(1)
+
 }
 
 func drawSquare(theSquare :NSRect) {
