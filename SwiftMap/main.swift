@@ -13,6 +13,9 @@ func SwiftMap() {
     
     let theScr = initscr()
     
+    /// Make the cursor prominent
+    curs_set(2)
+    
     // Make sure keyboard input is not echoed back to the screen.
     noecho()
     // Enable cursor keypresses.
@@ -30,22 +33,61 @@ func SwiftMap() {
 //        addstr("arse")
 //        refresh()
 //    }
+    let roomWidth = 10
+    let roomHeight = 5
+    
+    let scrX = getmaxx(stdscr)
+    let scrY = getmaxy(stdscr)
+    //print("attrx \(scrx),\(scry)")
+    /// Place the cursor in the middle 
+    var cursorX = scrX/2
+    var cursorY = scrY/2
+    move(cursorX ,cursorY)
+    
+    refresh()
+    
     var quit = false
     
     while quit == false {
-        move(0,0)
+        
         switch getch() {
         case KEY_UP:
-            addstr("Arrow up.")
+//            addstr("Arrow up.")
+            guard cursorY > 0 else { break }
+            cursorY -= 1
         case KEY_DOWN:
-            addstr("Arrow down.")
+//            addstr("Arrow down.")
+            guard cursorY < scrY-1 else { break }
+            cursorY += 1
         case KEY_LEFT:
-            addstr("Arrow left.")
+//            addstr("Arrow left.")
+            guard cursorX > 0 else { break }
+            cursorX -= 1
         case KEY_RIGHT:
-            addstr("Arrow right.")
-        default:
+//            addstr("Arrow right.")
+            guard cursorX < scrX+1 else { break }
+            cursorX += 1
+        case 114:
+            let midX = Int(cursorX-roomWidth/2)
+            let midY = Int(cursorY-roomHeight/2)
+            drawSquare(NSRect(x: midX , y: midY, width: roomWidth, height: roomHeight))
+            move(Int32(midY), Int32(midX))
+            refresh()
+        case 113:
             quit = true
+        case 46:
+            move(cursorY,cursorX)
+            addstr("\(cursorX)\(cursorY)")
+            refresh()
+        case let(unk):
+            addstr("Unknown \(unk)")
+            addstr("Press q to exit")
+            
         }
+        
+        move(cursorY ,cursorX)
+    addstr("*")
+        move(cursorY ,cursorX)
         refresh()
     }
     endwin()
@@ -80,9 +122,9 @@ func drawSquare(theSquare :NSRect) {
 }
 
 func input() -> String {
-    var keyboard = NSFileHandle.fileHandleWithStandardInput()
-    var inputData = keyboard.availableData
-    return NSString(data: inputData, encoding:NSUTF8StringEncoding)
+    let keyboard = NSFileHandle.fileHandleWithStandardInput()
+    let inputData = keyboard.availableData
+    return NSString(data: inputData, encoding:NSUTF8StringEncoding) as! String
 }
 
 //let runLoop = NSRunLoop.currentRunLoop()
